@@ -46,7 +46,7 @@ def read_tree(lines: Iterable[str]) -> list[tuple[str, str | None]]:
     last_indent = -1
     last_name = None
     result: list[tuple[str, str | None]] = []
-    for i, (indent, name) in enumerate(_lines_with_indent(lines)):
+    for line, (indent, name) in enumerate(_lines_with_indent(lines)):
         if indent > last_indent:
             parents.append((last_name, last_indent))
         elif indent < last_indent:
@@ -54,8 +54,8 @@ def read_tree(lines: Iterable[str]) -> list[tuple[str, str | None]]:
                 _, last_indent = parents.pop()
             if indent != last_indent:
                 raise IndentationError(
-                    f'unindent does not match any outer indentation '
-                    f'level in line {i}:\n'
+                    f"unindent does not match any outer indentation "
+                    f"level in line {line}:\n"
                 )
         result.append((name, parents[-1][0]))
         last_name = name
