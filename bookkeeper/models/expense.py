@@ -1,9 +1,10 @@
 """
-Описан класс, представляющий расходную операцию
+Модель расходной операции
 """
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from decimal import Decimal
 
 
 @dataclass(slots=True)
@@ -17,9 +18,10 @@ class Expense:
     comment - комментарий
     pk - id записи в базе данных
     """
-    amount: int
+
+    amount: Decimal
     category: int
     expense_date: datetime = field(default_factory=datetime.now)
     added_date: datetime = field(default_factory=datetime.now)
-    comment: str = ''
+    comment: str = ""
     pk: int = 0

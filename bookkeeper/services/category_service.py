@@ -5,14 +5,14 @@
 from collections import defaultdict
 from typing import Iterator
 from typing import Any
-from bookkeeper.repository.abstract_repository import AbstractRepository
 from bookkeeper.models.category import Category
+from bookkeeper.repository.memory_repository import MemoryRepository
 
 
 # TODO Добавить аннотации к методам
 class CategoryService:
-    def __init__(self, repo: AbstractRepository[Category]) -> None:
-        self.repo = repo
+    def __init__(self) -> None:
+        self.repo = MemoryRepository[Category]()
 
     def add(self, category: Category) -> int:
         """

@@ -6,14 +6,12 @@
 import pytest
 from inspect import isgenerator
 from bookkeeper.models.category import Category
-from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.services.category_service import CategoryService
 
 
 @pytest.fixture
 def category_service():
-    category_repo = MemoryRepository()
-    return CategoryService(category_repo)
+    return CategoryService()
 
 
 def get_all():
