@@ -19,7 +19,6 @@ def test_get_expense_by_pk(expense_service):
     expense = Expense(Decimal("100"), 1)
     pk = expense_service.add(expense)
     expense_from_store = expense_service.get(pk)
-    print(expense_from_store)
     assert expense_from_store.pk == pk
     assert expense == expense_from_store
     assert expense_service.get(-12312) is None
