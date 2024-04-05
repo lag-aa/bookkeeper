@@ -4,10 +4,9 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from decimal import Decimal
 
 
-@dataclass(slots=True)
+@dataclass()
 class Expense:
     """
     Расходная операция.
@@ -19,7 +18,7 @@ class Expense:
     pk - id записи в базе данных
     """
 
-    amount: Decimal
+    amount: int
     category: int
     expense_date: datetime = field(default_factory=datetime.now)
     added_date: datetime = field(default_factory=datetime.now)

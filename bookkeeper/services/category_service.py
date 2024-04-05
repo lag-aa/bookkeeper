@@ -6,13 +6,13 @@ from collections import defaultdict
 from typing import Iterator
 from typing import Any
 from bookkeeper.models.category import Category
-from bookkeeper.repository.memory_repository import MemoryRepository
+from bookkeeper.repository.abstract_repository import AbstractRepository, T
+from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
 
-# TODO Добавить аннотации к методам
 class CategoryService:
-    def __init__(self) -> None:
-        self.repo = MemoryRepository[Category]()
+    def __init__(self, repo: AbstractRepository[T] = None) -> None:
+        self.repo = repo or SQLiteRepository[Category](cls=Category)
 
     def add(self, category: Category) -> int:
         """
@@ -28,6 +28,19 @@ class CategoryService:
         """
         return self.repo.add(category)
 
+    def get(self, pk: int) -> Category | None:
+        """
+        Получить категорию по pk
+
+        Parameters
+        ----------
+        pk - pk категории
+        Returns
+        -------
+        Объект Category
+        """
+        return self.repo.get(pk)
+
     def get_all(self, where: dict[str, Any] | None = None) -> list[Category]:
         """
         Получить список всех категорий из хранилища
@@ -41,6 +54,26 @@ class CategoryService:
         Список объектов Category
         """
         return self.repo.get_all(where)
+
+    def update(self, obj: Category) -> None:
+        """
+        Обновить данные категории. Объект должен содержать поле pk.
+
+        Parameters
+        ----------
+        obj - Объект Category
+        """
+        self.repo.update(obj)
+
+    def delete(self, pk: int) -> None:
+        """
+        Удалить запись
+
+        Parameters
+        ----------
+        pk - pk категории
+        """
+        self.repo.delete(pk)
 
     def get_parent(self, category: Category) -> Category | None:
         """

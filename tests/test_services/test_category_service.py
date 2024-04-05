@@ -7,11 +7,19 @@ import pytest
 from inspect import isgenerator
 from bookkeeper.models.category import Category
 from bookkeeper.services.category_service import CategoryService
+from bookkeeper.scripts.create_db import create_database
+from bookkeeper.repository.sqlite_repository import SQLiteRepository
+
+
+@pytest.fixture()
+def repo():
+    create_database("test.db", True)
+    return SQLiteRepository(Category, "test.db")
 
 
 @pytest.fixture
-def category_service():
-    return CategoryService()
+def category_service(repo):
+    return CategoryService(repo)
 
 
 def get_all():

@@ -3,6 +3,7 @@
 """
 
 from typing import Iterable, Iterator
+from datetime import datetime, date, timedelta
 
 
 def _get_indent(line: str) -> int:
@@ -61,3 +62,31 @@ def read_tree(lines: Iterable[str]) -> list[tuple[str, str | None]]:
         last_name = name
         last_indent = indent
     return result
+
+
+def get_week_boundaries(day: datetime) -> tuple[date, date]:
+    """
+    Получить дату начала и конца недели по указанному дню
+
+    Parameters
+    ----------
+    day - день, для которого требуется найти даты
+
+    Returns
+    -------
+    Кортеж, состоящий из даты начала и конца недели
+    """
+    weekday = day.weekday()
+    start_of_week = day - timedelta(days=weekday)
+    end_of_week = start_of_week + timedelta(days=6)
+    return start_of_week.date(), end_of_week.date()
+
+
+def get_month_boundaries(day: datetime) -> tuple[date, date]:
+    """
+    Получить дату начала и конца месяца по указанному дню
+    """
+    start_of_month = day.replace(day=1).date()
+    next_month = start_of_month.replace(month=start_of_month.month + 1)
+    end_of_month = next_month - timedelta(days=1)
+    return start_of_month, end_of_month

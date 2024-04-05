@@ -4,12 +4,13 @@
 
 from typing import Any
 from bookkeeper.models.budget import Budget
-from bookkeeper.repository.memory_repository import MemoryRepository
+from bookkeeper.repository.abstract_repository import AbstractRepository, T
+from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
 
 class BudgetService:
-    def __init__(self) -> None:
-        self.repo = MemoryRepository[Budget]()
+    def __init__(self, repo: AbstractRepository[T] = None) -> None:
+        self.repo = repo or SQLiteRepository[Budget](Budget)
 
     def add(self, budget: Budget) -> int:
         """

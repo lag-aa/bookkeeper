@@ -3,13 +3,14 @@
 """
 
 from typing import Any
-from bookkeeper.repository.memory_repository import MemoryRepository
+from bookkeeper.repository.abstract_repository import AbstractRepository, T
+from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.models.expense import Expense
 
 
 class ExpenseService:
-    def __init__(self) -> None:
-        self.repo = MemoryRepository[Expense]()
+    def __init__(self, repo: AbstractRepository[T] = None) -> None:
+        self.repo = repo or SQLiteRepository[Expense](Expense)
 
     def add(self, expense: Expense) -> int:
         """
