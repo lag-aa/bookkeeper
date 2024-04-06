@@ -1,5 +1,5 @@
 """
-Модель категории расходов
+Category Model
 """
 
 from dataclasses import dataclass
@@ -8,12 +8,12 @@ from dataclasses import dataclass
 @dataclass
 class Category:
     """
-    Категория расходов, хранит название в атрибуте name и ссылку (id) на
-    родителя (категория, подкатегорией которой является данная) в атрибуте parent.
-    У категорий верхнего уровня parent = None
-    name - название категории
-    parent - pk ключ родителя
-    pk - id записи в базе данных
+    Сategory model.
+
+    Attributes:
+        name (str): The name of the category.
+        parent (int | None): The ID of the parent category (None for top-level categories).
+        pk (int): The record ID in the database.
     """
 
     name: str

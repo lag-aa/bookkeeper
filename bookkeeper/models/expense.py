@@ -1,5 +1,5 @@
 """
-Модель расходной операции
+Expense Operation Model
 """
 
 from dataclasses import dataclass, field
@@ -9,13 +9,15 @@ from datetime import datetime
 @dataclass()
 class Expense:
     """
-    Расходная операция.
-    amount - сумма
-    category - id категории расходов
-    expense_date - дата расхода
-    added_date - дата добавления в бд
-    comment - комментарий
-    pk - id записи в базе данных
+    Expense operation model.
+
+    Attributes:
+        amount (int): The amount of the expense.
+        category (int): The ID of the expense category.
+        expense_date (datetime): The date of the expense (default is current datetime).
+        added_date (datetime): The date added to the database (default is current datetime).
+        comment (str): Optional comment for the expense.
+        pk (int): The record ID in the database.
     """
 
     amount: int

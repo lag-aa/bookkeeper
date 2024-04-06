@@ -1,31 +1,32 @@
 """
-Модель Бюджета
+Budget Model
 """
 
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime, date
-from bookkeeper.utils.utils import get_week_boundaries
-from bookkeeper.utils.utils import get_month_boundaries
+from bookkeeper.utils.utils import get_week_boundaries, get_month_boundaries
 
 
 class PeriodType(str, Enum):
     """
-    Enum класс для описания возможные значений типа периода
+    Enum class to describe possible period type values.
     """
 
-    DAY = "День"
-    WEEK = "Неделя"
-    MONTH = "Месяц"
+    DAY = "Day"
+    WEEK = "Week"
+    MONTH = "Month"
 
 
 @dataclass()
 class Budget:
     """
-    Бюджет.
-    limit_amount - сумма ограничения бюджета
-    period_type - тип периода (день/неделя/месяц)
-    pk - id записи в базе данных
+    Budget data model.
+
+    Attributes:
+        limit_amount (int): The limit amount of the budget.
+        period_type (PeriodType): The period type (day/week/month).
+        pk (int): The record ID in the database.
     """
 
     limit_amount: int
@@ -35,7 +36,10 @@ class Budget:
     @property
     def period_dates(self) -> tuple[date, date]:
         """
-        Метод для получения даты начала и окончания периода
+        Method to get the start and end dates of the period.
+
+        Returns:
+            tuple[date, date]: Start and end dates of the period.
         """
         date_now = datetime.now()
         period_dates = {
