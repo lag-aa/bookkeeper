@@ -1,5 +1,5 @@
 """
-Сервис категории расходов
+Expense Category Service
 """
 
 from collections import defaultdict
@@ -12,81 +12,78 @@ from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
 class CategoryService:
     def __init__(self, repo: AbstractRepository[T] = None) -> None:
+        """
+        Initializes the CategoryService.
+
+        Parameters:
+            repo (AbstractRepository[T], optional): Repository to use. Defaults to None.
+        """
         self.repo = repo or SQLiteRepository[Category](cls=Category)
 
     def add(self, category: Category) -> int:
         """
-        Добавить категорию в хранилище.
+        Add a category to the storage.
 
-        Parameters
-        ----------
-        category - Объект Category, категория
+        Parameters:
+            category (Category): Category object.
 
-        Returns
-        -------
-        ID созданной категории
+        Returns:
+            int: ID of the created category.
         """
         return self.repo.add(category)
 
     def get(self, pk: int) -> Category | None:
         """
-        Получить категорию по pk
+        Get a category by pk.
 
-        Parameters
-        ----------
-        pk - pk категории
-        Returns
-        -------
-        Объект Category
+        Parameters:
+            pk (int): Category pk.
+
+        Returns:
+            Category | None: Category object.
         """
         return self.repo.get(pk)
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[Category]:
         """
-        Получить список всех категорий из хранилища
+        Get a list of all categories from the storage.
 
-        Parameters
-        ----------
-        where - Объект фильтрации
+        Parameters:
+            where (dict[str, Any] | None, optional): Filtering object. Defaults to None.
 
-        Returns
-        -------
-        Список объектов Category
+        Returns:
+            list[Category]: List of Category objects.
         """
         return self.repo.get_all(where)
 
     def update(self, obj: Category) -> None:
         """
-        Обновить данные категории. Объект должен содержать поле pk.
+        Update category data. The object must contain the pk field.
 
-        Parameters
-        ----------
-        obj - Объект Category
+        Parameters:
+            obj (Category): Category object.
         """
         self.repo.update(obj)
 
     def delete(self, pk: int) -> None:
         """
-        Удалить запись
+        Delete a record.
 
-        Parameters
-        ----------
-        pk - pk категории
+        Parameters:
+            pk (int): Category pk.
         """
         self.repo.delete(pk)
 
     def get_parent(self, category: Category) -> Category | None:
         """
-        Получить родительскую категорию в виде объекта Category
-        Если метод вызван у категории верхнего уровня, возвращает None
+        Get the parent category as a Category object.
+        Returns None if called on a top-level category.
 
-        Parameters
-        ----------
-        category - Объект Category, категория
+        Parameters:
+            category (Category): Category object.
 
-        Returns
-        -------
-        Объект класса Category или None
+        Returns:
+            Category | None: Category object or None.
         """
         if category.parent is None:
             return None
@@ -94,15 +91,13 @@ class CategoryService:
 
     def get_all_parents(self, category: Category) -> Iterator[Category]:
         """
-        Получить все категории верхнего уровня в иерархии.
+        Get all top-level categories in the hierarchy.
 
-        Parameters
-        ----------
-        category - Объект Category, категория
+        Parameters:
+            category (Category): Category object.
 
-        Yields
-        -------
-        Объекты Category от родителя и выше до категории верхнего уровня
+        Yields:
+            Iterator[Category]: Category objects from the parent to the top-level category.
         """
         parent = self.get_parent(category)
         if parent is None:
@@ -112,16 +107,14 @@ class CategoryService:
 
     def get_subcategories(self, category_pk: int) -> Iterator[Category]:
         """
-        Получить все подкатегории из иерархии, т.е. непосредственные
-        подкатегории данной, все их подкатегории и т.д.
+        Get all subcategories from the hierarchy, including
+        their subcategories and so on.
 
-        Parameters
-        ----------
-        category_pk - pk ключ объекта Category
+        Parameters:
+            category_pk (int): Category object pk.
 
-        Yields
-        -------
-        Объекты Category, являющиеся подкатегориями разного уровня ниже данной.
+        Yields:
+            Iterator[Category]: Category objects representing subcategories of various levels below this category.
         """
 
         def get_children(
@@ -139,23 +132,21 @@ class CategoryService:
 
     def create_from_tree(self, tree: list[tuple[str, str | None]]) -> list[Category]:
         """
-        Создать дерево категорий из списка пар "потомок-родитель".
-        Список должен быть топологически отсортирован, т.е. потомки
-        не должны встречаться раньше своего родителя.
-        Проверка корректности исходных данных не производится.
-        При использовании СУБД с проверкой внешних ключей, будет получена
-        ошибка (для sqlite3 - IntegrityError). При отсутствии проверки
-        со стороны СУБД, результат, возможно, будет корректным, если исходные
-        данные корректны за исключением сортировки. Если нет, то нет.
-        "Мусор на входе, мусор на выходе".
+        Create a category tree from a list of "child-parent" pairs.
+        The list must be topologically sorted, i.e. children
+        should not appear before their parents.
+        No validation of the input data is performed.
+        When using DBMS with foreign key checks, an error will be raised
+        (for sqlite3 - IntegrityError). Without DBMS validation,
+        the result may be correct if the input data is correct except for sorting.
+        If not, then not.
+        "Garbage in, garbage out".
 
-        Parameters
-        ----------
-        tree - список пар "потомок-родитель"
+        Parameters:
+            tree (list[tuple[str, str | None]]): List of "child-parent" pairs.
 
-        Returns
-        -------
-        Список созданных объектов Category
+        Returns:
+            list[Category]: List of created Category objects.
         """
         created: dict[str, Category] = {}
         for child, parent in tree:

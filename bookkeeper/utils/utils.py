@@ -1,52 +1,68 @@
 """
-Вспомогательные функции
+Utility functions
 """
 
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, Union
 from datetime import datetime, date, timedelta
 
 
 def _get_indent(line: str) -> int:
+    """
+    Get the indentation level of a line.
+
+    Parameters:
+        line (str): A line of text.
+
+    Returns:
+        int: Indentation level.
+    """
     return len(line) - len(line.lstrip())
 
 
 def _lines_with_indent(lines: Iterable[str]) -> Iterator[tuple[int, str]]:
+    """
+    Generate lines with their corresponding indentation level.
+
+    Parameters:
+        lines (Iterable[str]): Iterable object containing lines of text.
+
+    Yields:
+        tuple[int, str]: Indentation level and line content.
+    """
     for line in lines:
         if not line or line.isspace():
             continue
         yield _get_indent(line), line.strip()
 
 
-def read_tree(lines: Iterable[str]) -> list[tuple[str, str | None]]:
+def read_tree(lines: Iterable[str]) -> list[tuple[str, Union[str, None]]]:
     """
-    Прочитать структуру дерева из текста на основе отступов. Вернуть список
-    пар "потомок-родитель" в порядке топологической сортировки. Родитель
-    элемента верхнего уровня - None.
+    Read the tree structure from text based on indentation. Return a list of
+    "child-parent" pairs in topological order. The parent of a top-level item is None.
 
-    Пример. Следующий текст:
+    Example:
+    The following text:
     parent
         child1
             child2
         child3
 
-    даст такое дерево:
+    will yield this tree:
     [('parent', None), ('child1', 'parent'),
      ('child2', 'child1'), ('child3', 'parent')]
 
-    Пустые строки игнорируются.
+    Empty lines are ignored.
 
-    Parameters
-    ----------
-    lines - Итерируемый объект, содержащий строки текста (файл или список строк)
+    Parameters:
+        lines (Iterable[str]): Iterable object containing lines of text.
 
-    Returns
-    -------
-    Список пар "потомок-родитель"
+    Returns:
+        list[tuple[str, Union[str, None]]]: List of "child-parent" pairs.
     """
-    parents: list[tuple[str | None, int]] = []
+    parents: list[tuple[Union[str, None], int]] = []
     last_indent = -1
     last_name = None
-    result: list[tuple[str, str | None]] = []
+    result: list[tuple[str, Union[str, None]]] = []
     for line, (indent, name) in enumerate(_lines_with_indent(lines)):
         if indent > last_indent:
             parents.append((last_name, last_indent))
@@ -66,15 +82,13 @@ def read_tree(lines: Iterable[str]) -> list[tuple[str, str | None]]:
 
 def get_week_boundaries(day: datetime) -> tuple[date, date]:
     """
-    Получить дату начала и конца недели по указанному дню
+    Get the start and end dates of the week based on the specified day.
 
-    Parameters
-    ----------
-    day - день, для которого требуется найти даты
+    Parameters:
+        day (datetime): The day for which to find the dates.
 
-    Returns
-    -------
-    Кортеж, состоящий из даты начала и конца недели
+    Returns:
+        tuple[date, date]: Tuple containing the start and end dates of the week.
     """
     weekday = day.weekday()
     start_of_week = day - timedelta(days=weekday)
@@ -84,7 +98,13 @@ def get_week_boundaries(day: datetime) -> tuple[date, date]:
 
 def get_month_boundaries(day: datetime) -> tuple[date, date]:
     """
-    Получить дату начала и конца месяца по указанному дню
+    Get the start and end dates of the month based on the specified day.
+
+    Parameters:
+        day (datetime): The day for which to find the dates.
+
+    Returns:
+        tuple[date, date]: Tuple containing the start and end dates of the month.
     """
     start_of_month = day.replace(day=1).date()
     next_month = start_of_month.replace(month=start_of_month.month + 1)

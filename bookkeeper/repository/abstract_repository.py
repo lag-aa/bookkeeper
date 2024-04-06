@@ -1,10 +1,10 @@
 """
-Модуль содержит описание абстрактного репозитория
+Module containing the description of an abstract repository.
 
-Репозиторий реализует хранение объектов, присваивая каждому объекту уникальный
-идентификатор в атрибуте pk (primary key). Объекты, которые могут быть сохранены
-в репозитории, должны поддерживать добавление атрибута pk и не должны
-использовать его для иных целей.
+The repository implements storage of objects by assigning each object a unique
+identifier in the 'pk' attribute (primary key). Objects that can be saved
+in the repository must support adding the 'pk' attribute and should not
+use it for other purposes.
 """
 
 from abc import ABC, abstractmethod
@@ -13,7 +13,7 @@ from typing import Generic, TypeVar, Protocol, Any
 
 class Model(Protocol):  # pylint: disable=too-few-public-methods
     """
-    Модель должна содержать атрибут pk
+    Model should contain the 'pk' attribute.
     """
 
     pk: int
@@ -24,8 +24,8 @@ T = TypeVar("T", bound=Model)
 
 class AbstractRepository(ABC, Generic[T]):
     """
-    Абстрактный репозиторий.
-    Абстрактные методы:
+    Abstract repository.
+    Abstract methods:
     add
     get
     get_all
@@ -36,26 +36,26 @@ class AbstractRepository(ABC, Generic[T]):
     @abstractmethod
     def add(self, obj: T) -> int:
         """
-        Добавить объект в репозиторий, вернуть id объекта,
-        также записать id в атрибут pk.
+        Add an object to the repository, return the object's id,
+        also store the id in the 'pk' attribute.
         """
 
     @abstractmethod
     def get(self, pk: int) -> T | None:
-        """Получить объект по id"""
+        """Get an object by id"""
 
     @abstractmethod
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
         """
-        Получить все записи по некоторому условию
-        where - условие в виде словаря {'название_поля': значение}
-        если условие не задано (по умолчанию), вернуть все записи
+        Get all records based on some condition.
+        'where' - condition as a dictionary {'field_name': value}
+        if the condition is not specified (by default), return all records.
         """
 
     @abstractmethod
     def update(self, obj: T) -> None:
-        """Обновить данные об объекте. Объект должен содержать поле pk."""
+        """Update object data. The object must contain the 'pk' field."""
 
     @abstractmethod
     def delete(self, pk: int) -> None:
-        """Удалить запись"""
+        """Delete a record"""

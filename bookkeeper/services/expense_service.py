@@ -1,5 +1,5 @@
 """
-Сервис расходов
+Expense Service
 """
 
 from typing import Any
@@ -10,65 +10,64 @@ from bookkeeper.models.expense import Expense
 
 class ExpenseService:
     def __init__(self, repo: AbstractRepository[T] = None) -> None:
+        """
+        Initializes the ExpenseService.
+
+        Parameters:
+            repo (AbstractRepository[T], optional): Repository to use. Defaults to None.
+        """
         self.repo = repo or SQLiteRepository[Expense](Expense)
 
     def add(self, expense: Expense) -> int:
         """
-        Добавить расход в хранилище.
+        Add an expense to the storage.
 
-        Parameters
-        ----------
-        expense - Объект Expense, расходная операция
+        Parameters:
+            expense (Expense): Expense object.
 
-        Returns
-        -------
-        PK созданной расходной операции
+        Returns:
+            int: ID of the created expense operation.
         """
         return self.repo.add(expense)
 
     def get(self, pk: int) -> Expense | None:
         """
-        Получить расходную операцию по pk
+        Get an expense operation by pk.
 
-        Parameters
-        ----------
-        pk - pk расходной операции
-        Returns
-        -------
-        Объект Expense
+        Parameters:
+            pk (int): Expense pk.
+
+        Returns:
+            Expense | None: Expense object.
         """
         return self.repo.get(pk)
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[Expense]:
         """
-        Получить список всех расходных операций из хранилища
+        Get a list of all expense operations from the storage.
 
-        Parameters
-        ----------
-        where - Объект фильтрации
+        Parameters:
+            where (dict[str, Any] | None, optional): Filtering object. Defaults to None.
 
-        Returns
-        -------
-        Список объектов Expense
+        Returns:
+            list[Expense]: List of Expense objects.
         """
         return self.repo.get_all(where)
 
     def update(self, obj: Expense) -> None:
         """
-        Обновить данные об расходной операции. Объект должен содержать поле pk.
+        Update expense operation data. The object must contain the pk field.
 
-        Parameters
-        ----------
-        obj - Объект Expense
+        Parameters:
+            obj (Expense): Expense object.
         """
         self.repo.update(obj)
 
     def delete(self, pk: int) -> None:
         """
-        Удалить запись
+        Delete a record
 
-        Parameters
-        ----------
-        pk - pk расходной операции
+        Parameters:
+            pk (int): Expense pk.
         """
         self.repo.delete(pk)
