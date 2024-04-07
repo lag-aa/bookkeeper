@@ -30,6 +30,7 @@ class CategoryService:
         Returns:
             int: ID of the created category.
         """
+        print(category)
         return self.repo.add(category)
 
     def get(self, pk: int) -> Category | None:
@@ -56,14 +57,14 @@ class CategoryService:
         """
         return self.repo.get_all(where)
 
-    def update(self, obj: Category) -> None:
+    def update(self, category: Category) -> None:
         """
         Update category data. The object must contain the pk field.
 
         Parameters:
             obj (Category): Category object.
         """
-        self.repo.update(obj)
+        self.repo.update(category)
 
     def delete(self, pk: int) -> None:
         """

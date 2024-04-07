@@ -8,10 +8,10 @@ readme = "README.md"
 packages = [{include = "bookkeeper"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.14.0"
 freezegun = "^1.4.0"
+pyside6 = "^6.6.3.1"
 
 
 [tool.poetry.group.dev.dependencies]
