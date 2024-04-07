@@ -1,29 +1,31 @@
 import sqlite3
+from bookkeeper.models.budget import PeriodType
 
 
 def create_database(db_name: str = None, test_mode: bool = False):
     """
-    Функция предназначена для создания БД, таблиц и заполнения их данными
+    Function for creating a database, tables, and populating them with data.
 
     Parameters
     ----------
-    db_file - Название (путь к) БД
-    test_mode - Режим тестирования, если True будут созданы таблицы для тестирования
+    db_name : str
+        Name (path to) the database.
+    test_mode : bool
+        Test mode flag, if True, test tables will be created.
 
-    Exceptions
-    ----------
-    TypeError -  Если параметр db_file равен None или не передан.
+    Raises
+    ------
+    TypeError
+        If the db_name parameter is None or not provided.
     """
     if not db_name:
-        raise TypeError(
-            "Параметр 'db_file' является обязательным и не может быть None."
-        )
+        raise TypeError("'db_name' parameter is required and cannot be None.")
 
-    # Создание подключения к базе данных
+    # Establish connection to the database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
-    # Удаление всех таблиц из базы данных
+    # Drop all tables from the database
     cursor.execute("DROP TABLE IF EXISTS category;")
     cursor.execute("DROP TABLE IF EXISTS expense;")
     cursor.execute("DROP TABLE IF EXISTS budget;")
@@ -31,25 +33,15 @@ def create_database(db_name: str = None, test_mode: bool = False):
     if test_mode:
         cursor.execute("DROP TABLE IF EXISTS Custom;")
 
-        # cursor.execute(
-        #     """
-        # CREATE TABLE "Custom" (
-        #     "name"	TEXT NOT NULL,
-        #     "pk"	INTEGER UNIQUE,
-        #     PRIMARY KEY("pk")
-        #     );
-        # """
-        # )
-
-    # Создание таблиц, если они еще не существуют
+    # Create tables if they do not already exist
     cursor.execute(
         """
     CREATE TABLE IF NOT EXISTS "category" (
-        "name"	TEXT NOT NULL UNIQUE,
-        "parent"	INTEGER,
-        "pk"	INTEGER NOT NULL UNIQUE,
+        "name"	str UNIQUE,
+        "parent"	int,
+        "pk"	INTEGER UNIQUE,
         FOREIGN KEY("parent") REFERENCES "category",
-        PRIMARY KEY("pk")
+        PRIMARY KEY("pk" AUTOINCREMENT)
     );
     """
     )
@@ -57,13 +49,14 @@ def create_database(db_name: str = None, test_mode: bool = False):
     cursor.execute(
         """
     CREATE TABLE IF NOT EXISTS "expense" (
-        "amount"  INTEGER NOT NULL,
-        "category"	INTEGER NOT NULL,
-        "expense_date"	TEXT NOT NULL,
-        "added_date"	TEXT NOT NULL DEFAULT 'DATE(''now'')',
-        "comment"	TEXT,
-        "pk"	INTEGER NOT NULL UNIQUE,
-        PRIMARY KEY("pk")
+        "amount"  Decimal NOT NULL,
+        "category"	int NOT NULL,
+        "expense_date"	datetime NOT NULL,
+        "added_date"	datetime NOT NULL DEFAULT 'DATE(''now'')',
+        "comment"	str,
+        "pk"	INTEGER UNIQUE,
+        FOREIGN KEY("category") REFERENCES category(pk),
+        PRIMARY KEY("pk" AUTOINCREMENT)
     );
     """
     )
@@ -71,23 +64,24 @@ def create_database(db_name: str = None, test_mode: bool = False):
     cursor.execute(
         """
     CREATE TABLE IF NOT EXISTS "budget" (
-        "limit_amount"	INTEGER NOT NULL,
-        "period_type"	TEXT NOT NULL UNIQUE,
-        "pk"	INTEGER NOT NULL UNIQUE,
-        PRIMARY KEY("pk")
+        "limit_amount"	Decimal NOT NULL,
+        "period_type"	PeriodType NOT NULL UNIQUE,
+        "expenses"	Decimal DEFAULT 0,
+        "pk"	INTEGER UNIQUE,
+        PRIMARY KEY("pk" AUTOINCREMENT)
     );
     """
     )
 
-    # Тестовые данные
-    category_data = [("Еда", 1, None), ("Траснпорт", 2, None), ("ЖКХ", 3, None)]
+    # Test data
+    category_data = [("Food", 1, None), ("Transport", 2, None), ("Utilities", 3, None)]
 
     expense_data = [
         (
             1,
             454,
             1,
-            "2024-04-05 01:48:50.826683",
+            "2024-04-03 01:48:50.826683",
             "2024-04-05 01:48:50.826683",
             "Groceries",
         ),
@@ -95,7 +89,7 @@ def create_database(db_name: str = None, test_mode: bool = False):
             2,
             4533,
             2,
-            "2024-04-05 01:48:50.826683",
+            "2024-04-04 01:48:50.826683",
             "2024-04-05 01:48:50.826683",
             "Bus ticket",
         ),
@@ -107,34 +101,42 @@ def create_database(db_name: str = None, test_mode: bool = False):
             "2024-04-05 01:48:50.826683",
             "Electricity bill",
         ),
+        (
+            4,
+            4353,
+            3,
+            "2024-04-06 01:48:50.826683",
+            "2024-04-05 01:48:50.826683",
+            "Electricity bill",
+        ),
     ]
 
     budget_data = [
-        (1, "День", "1000"),
-        (2, "Неделя", "7000"),
-        (3, "Месяц", "30000"),
+        (1, PeriodType.DAY, "1000"),
+        (2, PeriodType.WEEK, "7000"),
+        (3, PeriodType.MONTH, "30000"),
     ]
 
-    # Вставка данных в таблицу category
+    # Insert data into the category table
     cursor.executemany(
         "INSERT INTO category (name, pk, parent) VALUES (?, ?, ?)", category_data
     )
 
-    # Вставка данных в таблицу expense
+    # Insert data into the expense table
     cursor.executemany(
         "INSERT INTO expense (pk, amount, category, expense_date, \
         added_date, comment) VALUES (?, ?, ?, ?, ?, ?)",
         expense_data,
     )
 
-    # Вставка данных в таблицу budget
+    # Insert data into the budget table
     cursor.executemany(
         "INSERT INTO budget (pk, period_type, limit_amount) VALUES (?, ?, ?)",
         budget_data,
     )
 
-    # Сохранение изменений в базе данных
+    # Save changes to the database
     conn.commit()
 
-    # Закрытие подключения к базе данных
+    # Close connection to the database
     conn.close()

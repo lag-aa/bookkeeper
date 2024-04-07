@@ -1,8 +1,6 @@
 import tempfile
 from textwrap import dedent
-
 import pytest
-
 from bookkeeper.utils.utils import read_tree
 
 

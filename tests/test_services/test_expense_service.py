@@ -1,14 +1,16 @@
 import pytest
+from datetime import datetime
+from decimal import Decimal
 from bookkeeper.models.expense import Expense
 from bookkeeper.services.expense_service import ExpenseService
 from bookkeeper.scripts.create_db import create_database
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
+from bookkeeper.repository.expense_repository import ExpenseRepository
 
 
 @pytest.fixture()
 def repo():
     create_database("test.db", True)
-    return SQLiteRepository(Expense, "test.db")
+    return ExpenseRepository("test.db")
 
 
 @pytest.fixture
@@ -35,7 +37,7 @@ def test_get_all_expenses(expense_service):
     pk = expense_service.add(Expense(200, 2))
     expense_service.add(Expense(300, 3))
     expenses_list = expense_service.get_all(where={"amount": 200})
-    assert expenses_list[0].pk == pk, "Проверка фильтрации"
+    assert expenses_list[0].pk == pk
     assert len(expenses_list) == 1
 
 
@@ -56,3 +58,11 @@ def test_delete_expense(expense_service):
     result = expense_service.delete(pk)
     assert result is None
     assert expense_service.get(pk) is None
+
+
+def test_get_total_expense_for_period(expense_service):
+    today = datetime.now()
+    expense_service.add(Expense(5000, 1, expense_date=today))
+    total = expense_service.get_total_expense_for_period(today, today)
+    assert total != Decimal(0)
+    assert total >= 5000

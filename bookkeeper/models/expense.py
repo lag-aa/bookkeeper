@@ -3,6 +3,7 @@ Expense Operation Model
 """
 
 from dataclasses import dataclass, field
+from decimal import Decimal
 from datetime import datetime
 
 
@@ -20,7 +21,7 @@ class Expense:
         pk (int): The record ID in the database.
     """
 
-    amount: int
+    amount: Decimal
     category: int
     expense_date: datetime = field(default_factory=datetime.now)
     added_date: datetime = field(default_factory=datetime.now)

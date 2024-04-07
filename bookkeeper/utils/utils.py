@@ -3,7 +3,6 @@ Utility functions
 """
 
 from typing import Iterable, Iterator, Union
-from datetime import datetime, date, timedelta
 
 
 def _get_indent(line: str) -> int:
@@ -78,35 +77,3 @@ def read_tree(lines: Iterable[str]) -> list[tuple[str, Union[str, None]]]:
         last_name = name
         last_indent = indent
     return result
-
-
-def get_week_boundaries(day: datetime) -> tuple[date, date]:
-    """
-    Get the start and end dates of the week based on the specified day.
-
-    Parameters:
-        day (datetime): The day for which to find the dates.
-
-    Returns:
-        tuple[date, date]: Tuple containing the start and end dates of the week.
-    """
-    weekday = day.weekday()
-    start_of_week = day - timedelta(days=weekday)
-    end_of_week = start_of_week + timedelta(days=6)
-    return start_of_week.date(), end_of_week.date()
-
-
-def get_month_boundaries(day: datetime) -> tuple[date, date]:
-    """
-    Get the start and end dates of the month based on the specified day.
-
-    Parameters:
-        day (datetime): The day for which to find the dates.
-
-    Returns:
-        tuple[date, date]: Tuple containing the start and end dates of the month.
-    """
-    start_of_month = day.replace(day=1).date()
-    next_month = start_of_month.replace(month=start_of_month.month + 1)
-    end_of_month = next_month - timedelta(days=1)
-    return start_of_month, end_of_month

@@ -6,12 +6,12 @@ from collections import defaultdict
 from typing import Iterator
 from typing import Any
 from bookkeeper.models.category import Category
-from bookkeeper.repository.abstract_repository import AbstractRepository, T
+from bookkeeper.repository.abstract_repository import AbstractRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
 
 class CategoryService:
-    def __init__(self, repo: AbstractRepository[T] = None) -> None:
+    def __init__(self, repo: AbstractRepository[Category] = None) -> None:
         """
         Initializes the CategoryService.
 

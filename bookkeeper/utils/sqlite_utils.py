@@ -2,8 +2,11 @@
 SQLite database utility.
 """
 
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
+from datetime import datetime
+from decimal import Decimal
 import sqlite3
+from bookkeeper.models.budget import PeriodType
 
 
 def dict_factory(cursor: sqlite3.Cursor, row: Tuple) -> Dict[str, Any]:
@@ -42,7 +45,7 @@ class SQLite:
         self.conn: sqlite3.Connection = None
         self.cur: sqlite3.Cursor = None
 
-    def __enter__(self) -> "SQL":
+    def __enter__(self) -> "SQLite":
         """
         Enters the context manager.
 
@@ -117,5 +120,41 @@ class SQLite:
             return db.cur.execute(sql, parameters)
 
 
+def adapt_datetime_iso(val):
+    """Adapt datetime.datetime to timezone-naive ISO 8601 date."""
+    return val.isoformat()
+
+
+def adapt_period_type(val):
+    """Adapt PeriodType to str."""
+    return val.value
+
+
+def adapt_decimal(val):
+    """Adapt Decimal to str"""
+    return str(val)
+
+
+def convert_datetime(val):
+    """Convert ISO 8601 datetime to datetime.datetime object."""
+    return datetime.fromisoformat(val.decode())
+
+
+def convert_period_type(s):
+    """Convert str to PeriodType object."""
+    return PeriodType(s.decode())
+
+
+def convert_decimal(s):
+    """convert to Decimal"""
+    return Decimal(s.decode())
+
+
+sqlite3.register_adapter(datetime, adapt_datetime_iso)
 sqlite3.register_adapter(str, lambda val: str(val))
+sqlite3.register_adapter(PeriodType, adapt_period_type)
+sqlite3.register_adapter(Decimal, adapt_decimal)
+
+sqlite3.register_converter("PeriodType", convert_period_type)
 sqlite3.register_converter("str", lambda val: str(val.decode()))
+sqlite3.register_converter("Decimal", convert_decimal)

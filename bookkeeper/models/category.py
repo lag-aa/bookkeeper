@@ -5,7 +5,7 @@ Category Model
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass()
 class Category:
     """
     Сategory model.

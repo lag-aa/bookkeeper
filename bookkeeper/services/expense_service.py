@@ -3,20 +3,22 @@ Expense Service
 """
 
 from typing import Any
-from bookkeeper.repository.abstract_repository import AbstractRepository, T
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
+from datetime import datetime
+from decimal import Decimal
+from bookkeeper.repository.abstract_repository import AbstractRepository
+from bookkeeper.repository.expense_repository import ExpenseRepository
 from bookkeeper.models.expense import Expense
 
 
 class ExpenseService:
-    def __init__(self, repo: AbstractRepository[T] = None) -> None:
+    def __init__(self, repo: AbstractRepository[Expense] = None) -> None:
         """
         Initializes the ExpenseService.
 
         Parameters:
             repo (AbstractRepository[T], optional): Repository to use. Defaults to None.
         """
-        self.repo = repo or SQLiteRepository[Expense](Expense)
+        self.repo = repo or ExpenseRepository()
 
     def add(self, expense: Expense) -> int:
         """
@@ -71,3 +73,21 @@ class ExpenseService:
             pk (int): Expense pk.
         """
         self.repo.delete(pk)
+
+    def get_total_expense_for_period(
+        self, start_date: datetime, end_date: datetime
+    ) -> Decimal:
+        """
+        Get the total expenses for the specified period of time.
+
+        Parameters:
+        start_date (datetime): The start date of the period.
+        end_date (datetime): The end date of the period.
+
+        Returns:
+        Decimal: The total expenses for the specified period.
+        """
+        if not isinstance(start_date, datetime) or not isinstance(end_date, datetime):
+            raise TypeError("start_date and end_date must be instances of datetime.")
+
+        return self.repo.get_total_expense_for_period(start_date, end_date)

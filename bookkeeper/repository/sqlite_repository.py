@@ -91,7 +91,7 @@ class SQLiteRepository(AbstractRepository[T]):
 
         columns: str = ", ".join(fields)
         p: str = ", ".join(["?"] * len(fields))
-        values: list[Any] = [getattr(obj, x) for x in fields]
+        values: tuple[Any] = tuple([getattr(obj, x) for x in fields])
 
         cur = self.db.execute("PRAGMA foreign_keys = ON")
         query: str = (
