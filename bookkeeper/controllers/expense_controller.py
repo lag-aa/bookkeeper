@@ -22,12 +22,17 @@ class ExpenseController:
         self.view = view or ExpenseWidget()
         self.expense_service = expense_service or ExpenseService()
         self.category_services = CategoryService()
-        self.populate_expenses()
-        self.populate_categories()
-
         self.view.bind_add_expense(self.add_expense)
         self.view.bind_delete_expense(self.delete_expense)
         self.view.bind_edit_expense(self.edit_expense)
+        self.view.bind_update_view(self.puplate_all)
+
+    def puplate_all(self) -> None:
+        """
+        Populates the expense view with the required data
+        """
+        self.populate_expenses()
+        self.populate_categories()
 
     def populate_expenses(self) -> None:
         """

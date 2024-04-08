@@ -1,5 +1,6 @@
 import sqlite3
 from bookkeeper.models.budget import PeriodType
+import configparser
 
 
 def create_database(db_name: str = None, test_mode: bool = False):
@@ -12,15 +13,14 @@ def create_database(db_name: str = None, test_mode: bool = False):
         Name (path to) the database.
     test_mode : bool
         Test mode flag, if True, test tables will be created.
-
-    Raises
-    ------
-    TypeError
-        If the db_name parameter is None or not provided.
     """
-    if not db_name:
-        raise TypeError("'db_name' parameter is required and cannot be None.")
 
+    config = configparser.ConfigParser()
+    config.read("bookkeeper/config/settings.ini")
+
+    if not db_name:
+        db_name = config["sqllite"]["db_name"]
+        
     # Establish connection to the database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()

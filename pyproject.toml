@@ -13,6 +13,10 @@ pytest-mock = "^3.14.0"
 freezegun = "^1.4.0"
 pyside6 = "^6.6.3.1"
 
+[tool.poetry.scripts]
+start = "bookkeeper.app:main"
+ready = "bookkeeper.scripts.create_db:create_database"
+
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

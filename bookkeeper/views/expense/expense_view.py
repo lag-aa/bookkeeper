@@ -38,7 +38,7 @@ class ExpenseWidget(QWidget):
         self.expense_table = QTableWidget()
         self.expense_table.setColumnCount(5)
         self.expense_table.setHorizontalHeaderLabels(
-            ["Сумма", "Категория", "Дата", "Комментарий", ""]
+            ["", "Сумма", "Категория", "Дата", "Комментарий"]
         )
         self.expense_table.setColumnHidden(0, True)
         self.expense_table.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -70,14 +70,45 @@ class ExpenseWidget(QWidget):
         self.setLayout(layout)
         self.add_expense_button.clicked.connect(self.add_expense)
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.handle_update_view()
+
     def bind_add_expense(self, handler):
+        """
+        Binds the handler function for adding an expense.
+
+        Args:
+            handler: Handler function for adding an expense.
+        """
         self.handle_add_expense = handler
 
     def bind_delete_expense(self, handler):
+        """
+        Binds the handler function for deleting an expense.
+
+        Args:
+            handler: Handler function for deleting an expense.
+        """
         self.handle_delete_expense = handler
 
     def bind_edit_expense(self, handler):
+        """
+        Binds the handler function for editing an expense.
+
+        Args:
+            handler: Handler function for editing an expense.
+        """
         self.handle_edit_expense = handler
+
+    def bind_update_view(self, handler):
+        """
+        Binds the handler function for updating the view.
+
+        Args:
+            handler: Handler function for updating the view.
+        """
+        self.handle_update_view = handler
 
     def populate_expenses(self, expenses):
         """
@@ -100,6 +131,7 @@ class ExpenseWidget(QWidget):
         Populates the category combo box with fake categories for testing.
         """
         self.categories.clear()
+        self.category_combo.clear()
         for category in categories:
             self.categories.append((category.pk, category.name))
             self.category_combo.addItem(category.name, category.pk)
@@ -110,7 +142,7 @@ class ExpenseWidget(QWidget):
         """
         amount = Decimal(self.add_amount.text())
         category = self.category_combo.currentData()
-        expense_date = self.date_edit.date().toPython()
+        expense_date = self.date_edit.dateTime().toPython()
         comment = self.add_comment.text()
 
         expense = Expense(amount, category, expense_date, comment=comment)

@@ -39,6 +39,22 @@ class CategoryWidget(QWidget):
         self.layout.addWidget(self.tree_widget)
         self.layout.addWidget(self.create_parent_button)
 
+    def showEvent(self, event):
+        """
+        Overrides the QWidget showEvent method.
+        """
+        super().showEvent(event)
+        self.handle_update_view()
+
+    def bind_update_view(self, handler):
+        """
+        Binds the update_view handler.
+
+        Args:
+            handler: Handler function for updating view.
+        """
+        self.handle_update_view = handler
+
     def bind_delete_category(self, handler):
         """
         Binds the delete category handler.

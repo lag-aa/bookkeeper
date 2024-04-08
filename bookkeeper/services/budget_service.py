@@ -92,3 +92,21 @@ class BudgetService:
         expenses = ExpenseService().get_total_expense_for_period(start_date, end_date)
         budget[0].expenses = expenses
         return budget[0]
+
+    def get_all_with_expenses(self) -> list[Budget] | None:
+        """
+        Retrieve a budget along with its total expenses for the given period type.
+
+        Returns:
+            list[Budget]: The list of budget object with expenses.
+        """
+        budgets = self.get_all()
+
+        for budget in budgets:
+            start_date, end_date = budget.period_dates
+            expenses = ExpenseService().get_total_expense_for_period(
+                start_date, end_date
+            )
+            budget.expenses = expenses
+
+        return budgets

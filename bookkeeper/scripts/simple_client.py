@@ -10,9 +10,6 @@ from pprint import pprint
 from bookkeeper.services.category_service import CategoryService
 from bookkeeper.services.expense_service import ExpenseService
 from bookkeeper.services.budget_service import BudgetService
-from bookkeeper.services.expense_report_service import ExpenseReportService
-from datetime import datetime
-
 from bookkeeper.scripts.create_db import create_database
 
 create_database("bookkeeper.db")
@@ -20,7 +17,6 @@ create_database("bookkeeper.db")
 exp_service = ExpenseService()
 cat_service = CategoryService()
 budget_service = BudgetService()
-exp_report_service = ExpenseReportService()
 
 cats = """
 продукты

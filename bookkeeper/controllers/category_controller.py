@@ -25,10 +25,11 @@ class CategoryController:
         self.view.bind_delete_category(self.delete_category)
         self.view.bind_add_category(self.add_category)
         self.view.bind_edit_category(self.edit_category)
+        self.view.bind_update_view(self.populate_categories)
 
     def populate_categories(self) -> None:
         """
-        Populates the category view with categories.
+        Populates the category view with the required data
         """
         categories = self.category_service.get_all()
         self.view.populate_categories(categories)
