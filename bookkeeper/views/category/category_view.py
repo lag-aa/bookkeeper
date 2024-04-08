@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import Qt
 from PySide6.QtGui import QAction
 from bookkeeper.models.category import Category
+from bookkeeper.utils.error_handling import handle_error
 
 
 class CategoryWidget(QWidget):
@@ -53,7 +54,7 @@ class CategoryWidget(QWidget):
         Args:
             handler: Handler function for updating view.
         """
-        self.handle_update_view = handler
+        self.handle_update_view = handle_error(self, handler=handler)
 
     def bind_delete_category(self, handler):
         """
@@ -62,7 +63,7 @@ class CategoryWidget(QWidget):
         Args:
             handler (Callable[[int], None]): Callback function for deleting categories.
         """
-        self.handle_delete_category = handler
+        self.handle_delete_category = handle_error(self, handler=handler)
 
     def bind_add_category(self, handler):
         """
@@ -71,7 +72,7 @@ class CategoryWidget(QWidget):
         Args:
             handler (Callable[[str, int], None]): Callback function for adding categories.
         """
-        self.handle_add_category = handler
+        self.handle_add_category = handle_error(self, handler=handler)
 
     def bind_edit_category(self, handler):
         """
@@ -81,7 +82,7 @@ class CategoryWidget(QWidget):
             handler (Callable[[Dict[str, Any]], None]): Callback function\
                 for editing categories.
         """
-        self.handle_edit_category = handler
+        self.handle_edit_category = handle_error(self, handler=handler)
 
     def show_context_menu(self, pos):
         """

@@ -30,7 +30,6 @@ class CategoryService:
         Returns:
             int: ID of the created category.
         """
-        print(category)
         return self.repo.add(category)
 
     def get(self, pk: int) -> Category | None:

@@ -18,6 +18,7 @@ from datetime import datetime
 from PySide6.QtCore import Qt, QDate
 from bookkeeper.models.expense import Expense
 from bookkeeper.views.expense.expense_edit_dialog import EditExpenseDialog
+from bookkeeper.utils.error_handling import handle_error
 
 
 class ExpenseWidget(QWidget):
@@ -81,7 +82,7 @@ class ExpenseWidget(QWidget):
         Args:
             handler: Handler function for adding an expense.
         """
-        self.handle_add_expense = handler
+        self.handle_add_expense = handle_error(self, handler=handler)
 
     def bind_delete_expense(self, handler):
         """
@@ -90,7 +91,7 @@ class ExpenseWidget(QWidget):
         Args:
             handler: Handler function for deleting an expense.
         """
-        self.handle_delete_expense = handler
+        self.handle_delete_expense = handle_error(self, handler=handler)
 
     def bind_edit_expense(self, handler):
         """
@@ -99,7 +100,7 @@ class ExpenseWidget(QWidget):
         Args:
             handler: Handler function for editing an expense.
         """
-        self.handle_edit_expense = handler
+        self.handle_edit_expense = handle_error(self, handler=handler)
 
     def bind_update_view(self, handler):
         """
@@ -108,7 +109,7 @@ class ExpenseWidget(QWidget):
         Args:
             handler: Handler function for updating the view.
         """
-        self.handle_update_view = handler
+        self.handle_update_view = handle_error(self, handler=handler)
 
     def populate_expenses(self, expenses):
         """
@@ -140,13 +141,17 @@ class ExpenseWidget(QWidget):
         """
         Adds a new expense based on the input fields.
         """
-        amount = Decimal(self.add_amount.text())
-        category = self.category_combo.currentData()
-        expense_date = self.date_edit.dateTime().toPython()
-        comment = self.add_comment.text()
+        # TODO Crutch, replace it
+        try:
+            amount = Decimal(self.add_amount.text())
+            category = self.category_combo.currentData()
+            expense_date = self.date_edit.dateTime().toPython()
+            comment = self.add_comment.text()
 
-        expense = Expense(amount, category, expense_date, comment=comment)
-        self.handle_add_expense(expense)
+            expense = Expense(amount, category, expense_date, comment=comment)
+            self.handle_add_expense(expense)
+        except Exception as ex:
+            QMessageBox.critical(self, "Ошибка", str(ex))
 
     def show_context_menu(self, pos):
         """
@@ -193,10 +198,13 @@ class ExpenseWidget(QWidget):
             comment=self.expense_table.item(selected_row, 4).text(),
             pk=int(self.expense_table.item(selected_row, 0).text()),
         )
+        # TODO Crutch, replace it
+        try:
+            dialog = EditExpenseDialog()
+            dialog.set_data(expense, self.categories)
 
-        dialog = EditExpenseDialog()
-        dialog.set_data(expense, self.categories)
-
-        if dialog.exec_():
-            updated_data = dialog.get_data()
-            self.handle_edit_expense(Expense(**updated_data))
+            if dialog.exec_():
+                updated_data = dialog.get_data()
+                self.handle_edit_expense(Expense(**updated_data))
+        except Exception as ex:
+            QMessageBox.critical(self, "Ошибка", str(ex))

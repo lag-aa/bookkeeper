@@ -82,8 +82,6 @@ def test_get_subcategories_complicated(category_service):
     category_service.add(Category("3", pk2))
     category_service.add(Category("4", pk2))
 
-    print(category_service.get_all())
-
     gen = category_service.get_subcategories(root.pk)
     assert isgenerator(gen)
     # using set because order doesn't matter

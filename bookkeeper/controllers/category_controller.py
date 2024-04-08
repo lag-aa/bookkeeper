@@ -21,7 +21,6 @@ class CategoryController:
         """
         self.view = view or CategoryWidget()
         self.category_service = category_service or CategoryService()
-        self.populate_categories()
 
         self.view.bind_delete_category(self.delete_category)
         self.view.bind_add_category(self.add_category)

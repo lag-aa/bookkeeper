@@ -10,10 +10,12 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QHeaderView,
     QHBoxLayout,
+    QMessageBox,
 )
 from PySide6.QtCore import Qt
 from decimal import Decimal
 from bookkeeper.models.budget import Budget, PeriodType
+from bookkeeper.utils.error_handling import handle_error
 
 
 class BudgetWidget(QWidget):
@@ -82,7 +84,7 @@ class BudgetWidget(QWidget):
         Args:
             handler: Handler function for adding budget.
         """
-        self.handle_add_budget = handler
+        self.handle_add_budget = handle_error(self, handler=handler)
 
     def bind_delete_budget(self, handler):
         """
@@ -91,7 +93,7 @@ class BudgetWidget(QWidget):
         Args:
             handler: Handler function for deleting budget.
         """
-        self.handle_delete_budget = handler
+        self.handle_delete_budget = handle_error(self, handler=handler)
 
     def bind_update_view(self, handler):
         """
@@ -100,7 +102,7 @@ class BudgetWidget(QWidget):
         Args:
             handler: Handler function for updating view.
         """
-        self.handle_update_view = handler
+        self.handle_update_view = handle_error(self, handler=handler)
 
     def populate_budgets(self, budgets):
         """
@@ -124,11 +126,15 @@ class BudgetWidget(QWidget):
         """
         Adds a new budget.
         """
-        period_type = self.period_type_combo.currentData()
-        limit_amount = Decimal(self.add_amount_limit.text())
+        # TODO Crutch, replace it
+        try:
+            period_type = self.period_type_combo.currentData()
+            limit_amount = Decimal(self.add_amount_limit.text())
 
-        budget = Budget(limit_amount, period_type)
-        self.handle_add_budget(budget)
+            budget = Budget(limit_amount, period_type)
+            self.handle_add_budget(budget)
+        except Exception as ex:
+            QMessageBox.critical(self, "Ошибка", str(ex))
 
     def show_context_menu(self, pos):
         """

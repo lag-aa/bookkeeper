@@ -116,8 +116,17 @@ class SQLite:
         Returns:
             sqlite3.Cursor: SQLite cursor after executing the query.
         """
-        with self as db:
-            return db.cur.execute(sql, parameters)
+        # TODO Replace validation
+        try:
+            with self as db:
+                return db.cur.execute(sql, parameters)
+        except sqlite3.IntegrityError as err:
+            err_type = "UNIQUE constraint failed"
+            if err_type in str(err):
+                msg_error = str(err).replace(
+                    err_type, "Используйте уникальное значение"
+                )
+                raise ValueError(msg_error)
 
 
 def adapt_datetime_iso(val):
