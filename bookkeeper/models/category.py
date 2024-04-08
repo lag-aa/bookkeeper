@@ -12,7 +12,7 @@ class Category:
 
     Attributes:
         name (str): The name of the category.
-        parent (int | None): The ID of the parent category (None for top-level categories).
+        parent (int | None): The ID of the parent category.
         pk (int): The record ID in the database.
     """
 

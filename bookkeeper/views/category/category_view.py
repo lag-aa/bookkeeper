@@ -78,7 +78,8 @@ class CategoryWidget(QWidget):
         Binds the edit category handler.
 
         Args:
-            handler (Callable[[Dict[str, Any]], None]): Callback function for editing categories.
+            handler (Callable[[Dict[str, Any]], None]): Callback function\
+                for editing categories.
         """
         self.handle_edit_category = handler
 

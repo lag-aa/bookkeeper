@@ -15,8 +15,8 @@ class Expense:
     Attributes:
         amount (int): The amount of the expense.
         category (int): The ID of the expense category.
-        expense_date (datetime): The date of the expense (default is current datetime).
-        added_date (datetime): The date added to the database (default is current datetime).
+        expense_date (datetime): The date of the expense (default is current).
+        added_date (datetime): The date added to the database (default is current).
         comment (str): Optional comment for the expense.
         pk (int): The record ID in the database.
     """

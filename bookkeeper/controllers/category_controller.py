@@ -16,7 +16,8 @@ class CategoryController:
 
         Args:
             view (CategoryWidget, optional): The category view widget. Defaults to None.
-            category_service (CategoryService, optional): The category service. Defaults to None.
+            category_service (CategoryService, optional): The category service. \
+            Defaults to None.
         """
         self.view = view or CategoryWidget()
         self.category_service = category_service or CategoryService()

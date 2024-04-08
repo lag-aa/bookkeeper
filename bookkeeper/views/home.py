@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
+from PySide6.QtWidgets import QMainWindow, QTabWidget
 from bookkeeper.views.budget.budget_veiw import BudgetWidget
 from bookkeeper.views.category.category_view import CategoryWidget
 from bookkeeper.views.expense.expense_view import ExpenseWidget

@@ -14,7 +14,7 @@ class ExpenseRepository(SQLiteRepository[Expense], AbstractRepository[Expense]):
         self, start_date: datetime, end_date: datetime
     ) -> int:
         query = f"""
-            SELECT SUM(amount) as total FROM {self.table_name} 
+            SELECT SUM(amount) as total FROM {self.table_name}
             WHERE expense_date BETWEEN ? AND ?
         """
         row = self.db.fetchone(query, (start_date, end_date))

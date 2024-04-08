@@ -20,7 +20,7 @@ def create_database(db_name: str = None, test_mode: bool = False):
 
     if not db_name:
         db_name = config["sqllite"]["db_name"]
-        
+
     # Establish connection to the database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()

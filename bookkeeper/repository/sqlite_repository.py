@@ -26,13 +26,15 @@ class SQLiteRepository(AbstractRepository[T]):
 
     Args:
         cls (type): The class type of objects to be stored in the repository.
-        db_file (str): The path to the SQLite database file. Default is db_name from settings.ini.
+        db_file (str): The path to the SQLite database file. Default is db_name \
+            from settings.ini.
 
     Attributes:
         db (SQL): The SQL database connection.
         cls (type): The class type of objects stored in the repository.
         table_name (str): The name of the database table.
-        fields (dict[str, Any]): The fields and their types of the objects stored in the repository.
+        fields (dict[str, Any]): The fields and their types of the objects \
+            stored in the repository.
     """
 
     def __init__(self, cls: type, db_file: str = None) -> None:
@@ -41,7 +43,8 @@ class SQLiteRepository(AbstractRepository[T]):
 
         Args:
             cls (type): The class type of objects to be stored in the repository.
-            db_file (str): The path to the SQLite database file. Default is db_name from settings.ini.
+            db_file (str): The path to the SQLite database file. Default is db_name \
+                from settings.ini.
         """
         config = configparser.ConfigParser()
         config.read("bookkeeper/config/settings.ini")
@@ -60,7 +63,8 @@ class SQLiteRepository(AbstractRepository[T]):
         Creates the database table based on the class fields.
 
         Note:
-            If an attribute is annotated as UnionType, str type will be used for that attribute.
+            If an attribute is annotated as UnionType, str type will be used \
+                for that attribute.
         """
         columns: list[str] = []
         for key, key_type in self.fields.items():

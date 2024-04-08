@@ -98,7 +98,8 @@ class CategoryService:
             category (Category): Category object.
 
         Yields:
-            Iterator[Category]: Category objects from the parent to the top-level category.
+            Iterator[Category]: Category objects from the parent \
+            to the top-level category.
         """
         parent = self.get_parent(category)
         if parent is None:
@@ -115,7 +116,8 @@ class CategoryService:
             category_pk (int): Category object pk.
 
         Yields:
-            Iterator[Category]: Category objects representing subcategories of various levels below this category.
+            Iterator[Category]: Category objects representing \
+            subcategories of various levels below this category.
         """
 
         def get_children(
