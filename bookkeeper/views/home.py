@@ -1,3 +1,6 @@
+"""Module for the home view."""
+
+# pylint: disable=E0611
 from PySide6.QtWidgets import QMainWindow, QTabWidget
 from bookkeeper.views.budget.budget_veiw import BudgetWidget
 from bookkeeper.views.category.category_view import CategoryWidget
@@ -7,6 +10,7 @@ from bookkeeper.controllers.expense_controller import ExpenseController
 from bookkeeper.controllers.budget_controller import BudgetController
 
 
+# pylint: disable=too-few-public-methods
 class MainWindow(QMainWindow):
     """
     Main window for managing expenses.

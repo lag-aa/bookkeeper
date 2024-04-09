@@ -1,3 +1,6 @@
+"""Module for error handling utilities."""
+
+# pylint: disable=E0611
 from PySide6.QtWidgets import QMessageBox
 
 
@@ -18,10 +21,11 @@ def handle_error(widget, handler):
             # Code that may raise exceptions
     """
 
+    # pylint: disable=W0718
     def inner(*args, **kwargs):
         try:
             handler(*args, **kwargs)
-        except Exception as ex:
-            QMessageBox.critical(widget, "Ошибка", str(ex))
+        except Exception as error:
+            QMessageBox.critical(widget, "Ошибка", str(error))
 
     return inner

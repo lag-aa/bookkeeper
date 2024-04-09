@@ -1,3 +1,5 @@
+"""Module for the BudgetController class."""
+
 from bookkeeper.services.budget_service import BudgetService
 from bookkeeper.views.budget.budget_veiw import BudgetWidget
 from bookkeeper.models.budget import Budget

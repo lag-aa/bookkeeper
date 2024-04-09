@@ -1,2 +1,2 @@
 [variables]
-good-names=pk,id,name
+good-names=pk,id,name,db

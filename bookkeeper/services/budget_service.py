@@ -3,21 +3,19 @@ Budget Service
 """
 
 from typing import Any
-from bookkeeper.models.budget import Budget, PeriodType
-from bookkeeper.repository.abstract_repository import AbstractRepository
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
-from bookkeeper.services.expense_service import ExpenseService
+from bookkeeper.models.budget import Budget
+from bookkeeper.repository.budget_repository import BudgetRepository
 
 
 class BudgetService:
-    def __init__(self, repo: AbstractRepository[Budget] = None) -> None:
+    def __init__(self, repo: BudgetRepository = None) -> None:
         """
         Initializes the BudgetService.
 
         Parameters:
             repo (AbstractRepository[T], optional): Repository to use. Defaults to None.
         """
-        self.repo = repo or SQLiteRepository[Budget](Budget)
+        self.repo = repo or BudgetRepository()
 
     def add(self, budget: Budget) -> int:
         """
@@ -73,40 +71,30 @@ class BudgetService:
         """
         self.repo.delete(pk)
 
-    def get_with_expenses(self, period_type: PeriodType) -> Budget | None:
+    def get_with_expenses(self, pk: int) -> Budget | None:
         """
         Retrieve a budget along with its total expenses for the given period type.
 
         Parameters:
-            period_type (PeriodType): The period type to filter budgets.
+            pk (int): pk of budget
 
         Returns:
             Budget | None: The budget object with expenses if found, else None.
         """
-        budget = BudgetService().get_all({"period_type": period_type})
+        return self.repo.get_with_expenses(pk)
 
-        if not budget:
-            return None
-
-        start_date, end_date = budget[0].period_dates
-        expenses = ExpenseService().get_total_expense_for_period(start_date, end_date)
-        budget[0].expenses = expenses
-        return budget[0]
-
-    def get_all_with_expenses(self) -> list[Budget] | None:
+    def get_all_with_expenses(
+        self, where: dict[str, Any] | None = None
+    ) -> list[Budget] | None:
         """
         Retrieve a budget along with its total expenses for the given period type.
 
         Returns:
             list[Budget]: The list of budget object with expenses.
         """
-        budgets = self.get_all()
-
-        for budget in budgets:
-            start_date, end_date = budget.period_dates
-            expenses = ExpenseService().get_total_expense_for_period(
-                start_date, end_date
-            )
-            budget.expenses = expenses
-
-        return budgets
+        budgets = self.repo.get_all(where)
+        return (
+            [self.repo.get_with_expenses(budget.pk) for budget in budgets]
+            if budgets
+            else None
+        )

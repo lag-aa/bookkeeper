@@ -1,17 +1,15 @@
 import pytest
 from decimal import Decimal
 from bookkeeper.models.budget import Budget, PeriodType
-from bookkeeper.models.expense import Expense
 from bookkeeper.services.budget_service import BudgetService
-from bookkeeper.services.expense_service import ExpenseService
 from bookkeeper.scripts.create_db import create_database
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
+from bookkeeper.repository.budget_repository import BudgetRepository
 
 
 @pytest.fixture()
 def repo():
     create_database("test.db", True)
-    return SQLiteRepository(Budget, "test.db")
+    return BudgetRepository("test.db")
 
 
 @pytest.fixture
@@ -40,10 +38,8 @@ def test_crud(budget_service):
 
 
 def test_get_with_expenses(budget_service):
-    budget = budget_service.get_with_expenses("Год")
-    ExpenseService().add(Expense(Decimal(1000), category=0))
-    budget_by_day = budget_service.get_with_expenses(PeriodType.DAY)
-    assert budget is None
+    budget = budget_service.get(1)
+    budget_by_day = budget_service.get_with_expenses(budget.pk)
     assert budget_by_day.expenses >= Decimal(1000)
 
 

@@ -21,9 +21,10 @@ def dict_factory(cursor: sqlite3.Cursor, row: Tuple) -> Dict[str, Any]:
         Dict[str, Any]: Dictionary representing the row data.
     """
     fields = [column[0] for column in cursor.description]
-    return {key: value for key, value in zip(fields, row)}
+    return dict(zip(fields, row))
 
 
+# pylint: disable=W0511
 class SQLite:
     """
     Utility class for SQLite database operations.
@@ -126,7 +127,8 @@ class SQLite:
                 msg_error = str(err).replace(
                     err_type, "Используйте уникальное значение"
                 )
-                raise ValueError(msg_error)
+                raise ValueError(msg_error) from err
+            return None
 
 
 def adapt_datetime_iso(val):
@@ -149,16 +151,17 @@ def convert_datetime(val):
     return datetime.fromisoformat(val.decode())
 
 
-def convert_period_type(s):
+def convert_period_type(val):
     """Convert str to PeriodType object."""
-    return PeriodType(s.decode())
+    return PeriodType(val.decode())
 
 
-def convert_decimal(s):
+def convert_decimal(val):
     """convert to Decimal"""
-    return Decimal(s.decode())
+    return Decimal(val.decode())
 
 
+# pylint: disable=W0108
 sqlite3.register_adapter(datetime, adapt_datetime_iso)
 sqlite3.register_adapter(str, lambda val: str(val))
 sqlite3.register_adapter(PeriodType, adapt_period_type)

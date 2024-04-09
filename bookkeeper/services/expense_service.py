@@ -5,13 +5,12 @@ Expense Service
 from typing import Any
 from datetime import datetime
 from decimal import Decimal
-from bookkeeper.repository.abstract_repository import AbstractRepository
 from bookkeeper.repository.expense_repository import ExpenseRepository
 from bookkeeper.models.expense import Expense
 
 
 class ExpenseService:
-    def __init__(self, repo: AbstractRepository[Expense] = None) -> None:
+    def __init__(self, repo: ExpenseRepository = None) -> None:
         """
         Initializes the ExpenseService.
 

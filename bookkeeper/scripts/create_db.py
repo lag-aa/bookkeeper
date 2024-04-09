@@ -1,6 +1,7 @@
 import sqlite3
-from bookkeeper.models.budget import PeriodType
 import configparser
+from datetime import datetime
+from bookkeeper.models.budget import PeriodType
 
 
 def create_database(db_name: str = None, test_mode: bool = False):
@@ -89,7 +90,7 @@ def create_database(db_name: str = None, test_mode: bool = False):
             2,
             4533,
             2,
-            "2024-04-04 01:48:50.826683",
+            datetime.now(),
             "2024-04-05 01:48:50.826683",
             "Bus ticket",
         ),

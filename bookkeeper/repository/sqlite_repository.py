@@ -8,11 +8,11 @@ Classes:
     SQLiteRepository: A repository class for SQLite database operations.
 """
 
+import configparser
 from inspect import get_annotations
 from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
 from bookkeeper.utils.sqlite_utils import SQLite
-import configparser
 
 
 config = configparser.ConfigParser()
@@ -46,8 +46,6 @@ class SQLiteRepository(AbstractRepository[T]):
             db_file (str): The path to the SQLite database file. Default is db_name \
                 from settings.ini.
         """
-        config = configparser.ConfigParser()
-        config.read("bookkeeper/config/settings.ini")
 
         if db_file is None:
             db_file = config["sqllite"]["db_name"]
@@ -94,12 +92,12 @@ class SQLiteRepository(AbstractRepository[T]):
             raise ValueError(f"trying to add object {obj} with filled `pk` attribute")
 
         columns: str = ", ".join(fields)
-        p: str = ", ".join(["?"] * len(fields))
-        values: tuple[Any] = tuple([getattr(obj, x) for x in fields])
+        inject: str = ", ".join(["?"] * len(fields))
+        values: tuple[Any] = tuple(getattr(obj, x) for x in fields)
 
         cur = self.db.execute("PRAGMA foreign_keys = ON")
         query: str = (
-            f"INSERT INTO {self.table_name} ({columns}) VALUES ({p})"
+            f"INSERT INTO {self.table_name} ({columns}) VALUES ({inject})"
             if columns
             else f"INSERT INTO {self.table_name} DEFAULT VALUES"
         )

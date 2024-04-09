@@ -1,3 +1,5 @@
+"""Module for the ExpenseController class."""
+
 from bookkeeper.services.expense_service import ExpenseService
 from bookkeeper.views.expense.expense_view import ExpenseWidget
 from bookkeeper.services.category_service import CategoryService

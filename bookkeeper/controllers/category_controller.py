@@ -1,3 +1,5 @@
+"""Module for the CategoryController class."""
+
 from bookkeeper.services.category_service import CategoryService
 from bookkeeper.views.category.category_view import CategoryWidget
 from bookkeeper.models.category import Category

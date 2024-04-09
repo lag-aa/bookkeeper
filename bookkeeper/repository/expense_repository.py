@@ -1,3 +1,5 @@
+"""Module for the ExpenseRepository class."""
+
 from datetime import datetime
 from decimal import Decimal
 from typing import Any
@@ -7,12 +9,16 @@ from bookkeeper.models.expense import Expense
 
 
 class ExpenseRepository(SQLiteRepository[Expense], AbstractRepository[Expense]):
+    """Repository class for managing expenses."""
+
     def __init__(self, db_file: str = None) -> None:
+        """Initialize ExpenseRepository."""
         super().__init__(Expense, db_file)
 
     def get_total_expense_for_period(
         self, start_date: datetime, end_date: datetime
     ) -> int:
+        """Get all expenses optionally filtered by criteria."""
         query = f"""
             SELECT SUM(amount) as total FROM {self.table_name}
             WHERE expense_date BETWEEN ? AND ?
