@@ -57,5 +57,5 @@ tests/               # Директория с модулями тестов
 ```python
 class BudgetService:
     def __init__(self, repo: AbstractRepository[Budget] = None) -> None:
-        **self.repo = repo or SQLiteRepository[Budget](Budget)**
+        self.repo = repo or SQLiteRepository[Budget](Budget)
 ```
